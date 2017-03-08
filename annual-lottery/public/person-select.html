@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>幸运大转盘</title>
+        <meta name="description" content="Custom Login Form Styling with CSS3" />
+        <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+		<style>
+			body {
+				background: #e1c192 url(images/wood_pattern2.jpg);
+			}
+			.pickpick{
+				width: 72px;
+				height: 36px;
+				line-height: 36px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				text-align: center;
+				font-weight: 800;
+				margin-bottom: 10px;
+			}
+			.pick-choose{
+				color: #ffffff;
+				background: orangered;
+			}
+			.refresh{
+				padding:5px;
+				position:absolute;
+				right:10px;
+				top:8px;
+				border: 1px solid #ddd
+			}
+			.round-1 i{
+				color:red;
+			}
+			.round-2 i{
+				color:red;
+			}
+		</style>
+    </head>
+    <body>
+        <div class="container" style="vertical-align: middle">
+			<section class="main">
+				<form class="form-2">
+					<h1>
+						<span class="log-in" style="font-size: 18px;">幸运大转盘</span>
+						<span class="refresh">刷新页面</span>
+					</h1>
+					<p class="name-input">
+						<label style="padding-top: 10px;">请输入您的抽奖码</label>
+						<input type="text" style="line-height: 36px;font-size: 18px;" name="name" placeholder="">
+					</p>
+				</form>
+			</section>
+
+			<section class="main">
+				<form class="form-2">
+					<div>
+						<span class="round-1" style="margin-right: 10px;"><i></i></span>
+						<span class="round-2"><i></i></span>
+					</div>
+				</form>
+			</section>
+
+			<section class="main">
+				<form class="form-2">
+					<h1>
+						<span class="log-in" style="font-size: 18px;">请选择您想要下注的金额</span>
+					</h1>
+					<div id="price-member" style="display: flex;display: -webkit-flex;flex-direction: row;flex-wrap: wrap;justify-content: space-between;margin-top: 20px;">
+					</div>
+					<p class="clearfix" style="padding-top: 10px; ">
+						<input type="button" style="width: 100%;" value="确认">
+					</p>
+
+				</form>
+			</section>
+
+        </div>
+        <script type="text/javascript" src="javascripts/jquery.min.js"></script>
+		<script type="text/javascript">
+//			获取每轮的金额和姓名
+			$(function(){
+				var chooseNo,roundPrices;
+				$.ajax({
+					url:'../turntable/stake',
+					type:'get',
+					success:function(res){
+						if (res.retCode == 0) {
+							if (res.name) {
+								console.log(res.name);
+								$('.name-input input').val(res.name);
+								// $('.name-input input').attr("disabled", true);
+							}
+
+							if (typeof res.position != 'undefined') {
+								chooseNo = res.position;
+								loadPrices();
+//								$('.name-input input').attr("disabled", true);
+								$('input[type=button]').attr("disabled", true);
+								$('#price-member').css('pointer-events', 'none');
+							} else {
+								loadPrices();
+							}
+							if (res.history) {
+								for (var i = 1; i < 3; i++) {
+									if (res.history[i]) {
+										var result;
+										if (res.history[i].win == true) {
+											result = "中奖";
+										} else if (res.history[i].win == false) {
+											result = "未中奖";
+										} else {
+											result = "";
+										}
+										$('.round-' + i).find('i').html(result);
+									}
+								}
+							}
+						}
+					}
+				});
+//				写入奖金数
+			var loadPrices=function(){
+				$.ajax({
+					url:'../turntable/prize',
+					type:'get',
+					success:function(msg){
+						console.log(msg.round);
+						$('.rounds i').text(msg.round);
+						roundPrices=msg.prize;
+						for(var i=0;i<msg.prize.length;i++){
+							var priceMember;
+							if(i==chooseNo){
+								priceMember='<div id="pick-'+i+'" data-value="'+i+'" class="pickpick pick-choose">'+msg.prize[i]+'元</div>';
+							}else{
+								priceMember='<div id="pick-'+i+'" data-value="'+i+'" class="pickpick">'+msg.prize[i]+'元</div>';
+							}
+							$('#price-member').append(priceMember);
+						}
+//	ios 8用户特殊处理
+						gt_ios8();
+					}
+				});
+			 }
+			});
+//			获取用户选择的金额
+			var position;
+			var ownName;
+			$('#price-member').on('click','.pickpick',function(){
+				$('.pickpick').removeClass('pick-choose');
+				$(this).addClass('pick-choose');
+				position=$(this).attr("data-value");
+			});
+			$('input[type=button]').click(function() {
+				console.log("你投注的位置："+position);
+				ownName =$('.name-input input').val();
+				console.log("你投注的姓名："+ownName.toUpperCase());
+				$.ajax({
+					url:'../turntable/stake',
+					data:{position:position,name:ownName.toUpperCase()},
+					type:'post',
+					success:function(res){
+                      if(res.retCode==0){
+						  alert('下注成功！');
+//						  $('.name-input input').attr("disabled",true);
+						  $('input[type=button]').attr("disabled",true);
+						  $('#price-member').css('pointer-events','none');
+					  } else if (res.retCode == -100) {
+						  alert('抽奖码错误！');
+					  } else {
+						  alert('现在不能下注！');
+//						  alert(JSON.stringify(res));
+					  }
+					}
+				});
+			});
+//			时时监听用户是否中奖
+			var timer=setInterval(function(){
+				$.ajax({
+					url:'../turntable/stake',
+					type:'get',
+					success:function(res){
+						if(res.retCode==0){
+							if(res.history){
+                                for(var i=1 ;i<3;i++){
+									if (res.history[i]) {
+										var result;
+										if (res.history[i].win == true) {
+											result = "中奖";
+										} else if (res.history[i].win == false) {
+											result = "未中奖";
+										} else {
+											result = "";
+										}
+										$('.round-' + i).find('i').html(result);
+									}
+								}
+							}
+						}
+					}
+				});
+			},5000);
+//			刷新当前页面
+			$('.refresh').click(function(){
+				window.location.href=window.location.href+"?id="+10000*Math.random();
+			});
+//			判断手机版本为ios8时，将flex流改为block
+			function gt_ios8() {
+				var ver = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+				console.log(ver);
+				var version = parseInt(ver[1], 10);
+				console.log(version);
+				if(version==8)
+				{
+					$('#price-member').css('display',"block");
+					$('#price-member div').css({'float':"left",'margin-right':"10px"});
+				}
+			}
+		</script>
+    </body>
+</html>

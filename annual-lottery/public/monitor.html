@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>抽奖监控</title>
+</head>
+<body>
+<script type="text/javascript" src="javascripts/jquery.min.js"></script>
+<script type="text/javascript">
+    var notification = null;
+    function warn(detail) {
+        if (notification != null) {
+            return;
+        }
+
+        if (!("Notification" in window)) {
+            alert("浏览器不支持消息提醒");
+        } else if (Notification.permission === "granted") {
+            notification = new Notification("警告", {body: detail});
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+                if (permission === "granted") {
+                    notification = new Notification("警告", {body: detail});
+                }
+            });
+        }
+        notification.addEventListener('close', function () {
+            notification = null;
+        });
+    }
+
+    function ping() {
+        $.ajax({
+            url: "../turntable/prize",
+            timeout: 2000,
+            success: function (resp) {
+                if (resp.retCode != 0) {
+                    warn(resp.retMsg);
+                } else {
+                    if (notification != null) {
+                        notification.close();
+                    }
+                }
+            },
+            error: function (e) {
+                warn(JSON.stringify(e));
+            }
+        });
+    }
+
+    setInterval(ping, 3000);
+</script>
+</body>
+</html>

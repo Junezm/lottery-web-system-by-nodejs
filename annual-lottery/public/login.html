@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <title>搜狗2017抽奖系统</title>
+        <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+		<style>
+			body {
+				background: #e1c192 url(images/wood_pattern2.jpg);
+			}
+		</style>
+    </head>
+    <body>
+        <div class="container" style="margin-top: 80px;">
+
+			<section class="main">
+				<form class="form-2">
+					<h1><span class="log-in" style="font-size: 18px;">搜狗2017抽奖系统</span></h1>
+					<p class="float">
+						<label style="padding-top: 20px;">请输入您的姓名</label>
+						<input type="text" style="line-height: 36px;font-size: 18px;" name="name" placeholder="">
+					</p>
+					<p class="float">
+						<label>请输入您的工号</label>
+						<input type="text" style="line-height: 36px;font-size: 18px;" name="no" placeholder="">
+					</p>
+					<p class="clearfix" style="padding-top: 40px;">
+						<input type="button" style="width: 100%;" value="登录">
+					</p>
+				</form>
+			</section>
+        </div>
+
+        <script type="text/javascript" src="javascripts/jquery.min.js"></script>
+	    <script>
+			$('input[type=button]').click(function(){
+				var name=$('input[name=name]').val();
+				var no=$('input[name=no]').val();
+				$.ajax({
+					url:'/turntable/login',
+					data:{name:name,no:no},
+					type:'post',
+					success:function(msg){
+						if(msg.retCode=='0'){
+							window.location="person-select.html";
+						}else{
+							alert("姓名或者工号错误,请重新填写！")
+						}
+					}
+				})
+			})
+	    </script>
+    </body>
+</html>

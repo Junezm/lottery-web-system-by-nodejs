@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>拼图抽奖</title>
+    <style type="text/css">
+       /* *{
+          font-family: "Microsoft YaHei","Times New Roman",Georgia,Serif;
+        }*/
+       * {
+           margin: 0;
+           padding: 0;
+       }
+       body {
+           background: #2a2b2d;
+           font: 13px/1.3 'Microsoft Yahei','宋体';
+           color: #999;
+       }
+        table{
+        }
+        tbody{
+             position:relative;
+        }
+        td{
+            text-align:center;
+            vertical-align:middle;   
+            background-image: url(images/12355.png);
+            background-repeat: no-repeat;
+            background-size: 84px 63px;
+            width: 84px;
+            height: 63px;
+            position:relative;
+            }
+        .choose{
+            background-image: url(images/12355.png);
+            color:#fff;
+            }
+        .choose span{
+            padding:5px;
+            border-radius:10px;
+            background-color: #EA5534
+        }
+        .win-price{
+            text-align:center;
+            vertical-align:middle;   
+            background-image: url(images/33.png);
+            background-repeat: no-repeat;
+            background-size:84px 63px;
+            width: 84px;
+            height: 63px;
+            position:relative;
+            display: table-cell;
+            color:#fff;
+            }
+        .win-price span{
+          padding:5px;
+          border-radius:10px;
+
+        }
+        .delete-part{
+          text-align:center;
+          vertical-align:middle;   
+          color:#fff;
+          width: 84px;
+          height: 63px;
+          position:relative;
+          display: table-cell;
+          opacity: 0;  
+        }
+        .mask {       
+            position: absolute;
+            background-color: #2b2b2b;     
+            z-index: 5;   
+            opacity:0.5;   
+            text-align:center;
+            display: none;
+        }
+        .back-price{
+           text-align:center;
+
+           /* background-image: url(images/tuchu.png);
+            background-repeat: no-repeat;
+            background-size:84px 63px;*/
+            width: 84px;
+            height: 63px;
+            position:fixed;
+            display: table-cell;
+            color:red;
+            opacity:1;
+            z-index:1000;
+        }
+        .back-price span{
+           text-align:center;
+           line-height:60px; 
+           color:#FFFFFF;
+          
+        }
+        .back-price-3d{
+          text-shadow: 0 1px 0 #ccc,
+           0 2px 0 #c9c9c9,
+           0 3px 0 #bbb,
+           0 4px 0 #b9b9b9,
+           0 5px 0 #aaa,
+           0 6px 1px rgba(0,0,0,.1),
+           0 0 5px rgba(0,0,0,.1),
+           0 1px 3px rgba(0,0,0,.3),
+           0 3px 5px rgba(0,0,0,.2),
+           0 5px 10px rgba(0,0,0,.25),
+           0 10px 10px rgba(0,0,0,.2),
+           0 20px 20px rgba(0,0,0,.15);
+        }
+        .price-img{
+            position: fixed;
+            z-index: 1000;
+            bottom: 50px;
+            left:300px;
+        }
+       .price-img img{
+           height: 150px;
+       }
+    </style>
+</head>
+<body style="background-image:url(images/register.jpg) ;background-size: 100%;background-repeat: no-repeat;width:100%;height:80%">
+<div id="createtable" style="background-image:url(images/register.jpg) ;background-size: 100%;background-repeat: no-repeat;width:100%;height:100%"></div>
+<div id="mask" class="mask"></div>
+<script type="text/javascript" src="./javascripts/jquery.min.js"></script>
+<script type="text/javascript" src="./javascripts/create-table.js"></script>
+<script type="text/javascript" src="./javascripts/price-members.js"></script>
+</body>
+</html>
